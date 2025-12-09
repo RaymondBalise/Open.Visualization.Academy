@@ -1,0 +1,166 @@
+---
+title: "Creating Copy-Paste Friendly Table Summaries in R"
+author: "Raymond Balies"
+date: last-modified
+format: html
+vignette: >
+  %\VignetteIndexEntry{Creating Copy-Paste Friendly Table Summaries in R}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+knitr:
+  opts_chunk:        ########## set global options ############
+    collapse: true   # keep code from blocks together (if shown)
+    echo: false      # don't show code
+    message: true    # show messages
+    warning: true    # show warnings
+    error: true      # show error messages
+    comment: ""      # don't show ## with printed output
+    dpi: 100         # image resolution (typically 300 for publication)
+    fig-width: 6.5   # figure width
+    fig-height: 4.0  # figure height
+    R.options:    
+      digits: 3      # round to three digits
+editor: source
+bibliography: [references.bib, packages.bib]
+csl: the-new-england-journal-of-medicine.csl
+---
+
+```{r}
+#| echo: false
+
+library(tibble)
+library(hms)
+
+# Create a tibble with all common R data types for testing
+test_data <- tibble(
+  # Character
+  char_col = c("apple", "banana", "cherry", "damson", "elderberry"),
+
+  # Numeric (double)
+  numeric_col = c(1.5, 2.7, 3.14, 4.0, 5.9),
+  numeric_col_miss = c(1.5, 2.7, 3.14, NA, 5.9),
+
+  # Integer
+  integer_col = c(1L, 2L, 3L, 4L, 5L),
+  integer_col_miss = c(1L, 2L, 3L, NA, 5L),
+
+  # Logical
+  logical_col = c(TRUE, FALSE, TRUE, FALSE, TRUE),
+  logical_col_miss = c(TRUE, FALSE, TRUE, NA, TRUE),
+
+  # Factor (unordered)
+  factor_col = factor(c("low", "medium", "high", "medium", "low")),
+  factor_col_miss = factor(c("low", "medium", "high", NA, "low")),
+
+  # Ordered factor
+  ordered_col = ordered(c("small", "medium", "large", "medium", "small"),
+                        levels = c("small", "medium", "large")),
+  # Ordered factor
+  ordered_col_miss = ordered(c("small", "medium", "large", NA, "small"),
+                        levels = c("small", "medium", "large")),
+
+  # Date
+  date_col = as.Date(c("2034-01-01", "2034-06-15", "2034-12-31", "2033-03-20", "2035-08-10")),
+
+  # POSIXct (datetime)
+  datetime_col = as.POSIXct(c("2034-01-01 09:30:00", "2034-06-15 14:45:30",
+                              "2034-12-31 23:59:59", "2033-03-20 08:15:22",
+                              "2035-08-10 16:20:45")),
+
+  # hms (time only)
+  time_col = hms::as_hms(c("09:30:00", "14:45:30", "23:59:59", "08:15:22", "16:20:45")),
+  time_col_miss = hms::as_hms(c("09:30:00", "14:45:30", "23:59:59", NA, "16:20:45")),
+
+  # Complex numbers
+  # complex_col = c(1+2i, 3+4i, 5+0i, 0+6i, 2-3i),
+
+  # Raw bytes
+  # raw_col = as.raw(c(65, 66, 67, 68, 69)),  # A, B, C, D, E in ASCII
+
+  # List column (nested data)
+  # list_col = list(
+  #   c(1, 2, 3),
+  #   c("a", "b"),
+  #   c(TRUE, FALSE, TRUE),
+  #   NULL,
+  #   data.frame(x = 1:2, y = letters[1:2])
+  # )
+)
+```
+
+# The Problem
+
+To get the most helpful answers, to analysis questions, from AI tools (like ChatGPT, Claude, Copilot, and Gemini), the tools need to know about your data but uploading datasets is often problematic or even illegal.  
+
+# The Solution
+
+It would be useful to have a function that prints a description of datasets that excludes details that are known to be, or are likely to be, sensitive.  For example, dates are protected health information, free-form text is also problematic.  While the output from the function needs to be checked to make sure there is no sensitive data, it is potentially useful to have a function that prints variable names, variable types and the permitted values for categorical data.
+
+To have R print a description of your dataset — for example, for a dataset named `test_data` — you can first tell R to load the `Open.Visualization.Academy` package into its thinking memory and then use the `show_structure()` function like this:
+```{.r}
+library(Open.Visualization.Academy)
+show_structure(test_data)
+```
+
+or you can tell R to use the function with only one line, like this:
+
+```{.r}
+Open.Visualization.Academy::show_structure(test_data)
+```
+
+The result will look like this:
+
+```{.markdown}
+Table: `test_data` looks like this
+
+|variable         |type               |levels                           |
+|:----------------|:------------------|:--------------------------------|
+|char_col         |character          |                                 |
+|numeric_col      |numeric            |range: [1.5-5.9]                 |
+|numeric_col_miss |numeric            |range: [1.5-5.9], NA             |
+|integer_col      |integer            |range: [1-5]                     |
+|integer_col_miss |integer            |range: [1-5], NA                 |
+|logical_col      |logical            |TRUE, FALSE                      |
+|logical_col_miss |logical            |TRUE, FALSE, NA                  |
+|factor_col       |factor             |high, low, medium                |
+|factor_col_miss  |factor             |high, low, medium, NA            |
+|ordered_col      |ordered factor     |small, medium, large             |
+|ordered_col_miss |ordered factor     |small, medium, large, NA         |
+|date_col         |Date               |                                 |
+|datetime_col     |datetime           |                                 |
+|time_col         |time (hrs:min:sec) |range: [08:15:22 - 23:59:59]     |
+|time_col_miss    |time (hrs:min:sec) |range: [09:30:00 - 23:59:59], NA |
+```
+
+The report is designed to not print sensitive data like names (which are likely character variables) and dates.  However, before pasting the output into any AI tools, you should look at the "levels" details, and make sure that all the details are safe to share with the public. To learn more about de-identification and protected health information (PHI) in the United States, visit the Health and Human Services webpage on [De-Identification of PHI](https://www.hhs.gov/hipaa/for-professionals/special-topics/de-identification/index.html#rationale).
+
+## What is the example data?
+
+If you are curious, the example dataset has all the types of data which you are likely to see.  Notice there are columns which were made to have no missing data (like `numeric_col`) and columns that contain missing (like `numeric_col_miss`).
+
+```{r}
+library(dplyr)
+library(kableExtra)
+
+# Function to replace NA with red-colored NA in HTML output
+format_na_red <- function(x) {
+  if_else(is.na(x), 
+          '<span style="color: red;">NA</span>', 
+          as.character(x))
+}
+
+# Apply the formatting and create the table
+test_data |> 
+  mutate(across(everything(), format_na_red)) |> 
+  kable(format = "html", escape = FALSE) |> 
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
+# # Alternative approach using cell_spec from kableExtra
+# test_data |> 
+#   mutate(across(everything(), ~ cell_spec(.x, 
+#                                           color = if_else(is.na(.x), "red", "black"),
+#                                           format = "html"))) |> 
+#   kable(format = "html", escape = FALSE) |> 
+#   kable_styling(bootstrap_options = c("striped", "hover"))
+```
+
