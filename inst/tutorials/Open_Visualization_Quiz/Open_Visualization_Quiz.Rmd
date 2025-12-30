@@ -1,0 +1,562 @@
+---
+title: "Visualization with Rs ggplot2 Package and AI Tools - Quiz"
+output: learnr::tutorial
+runtime: shiny_prerendered
+description: 'This quiz covers topics from the _"Visualization with R’s ggplot2 Package and AI Tools like ChatGPT, Claude, Copilot, and Gemini"_ course on the [Open Visualization Academy website](). Watch the videos **About R**, **About Quarto**, **Thoughts About AI**, and **Fundamentals of ggplot2** before taking the quiz.'
+---
+
+
+```{r setup, include=FALSE}
+library(learnr)
+library(gradethis)
+library(tidyverse)
+library(sortable)
+library(htmltools)
+
+
+# Set gradethis options
+gradethis::gradethis_setup(
+  pass = "Submitted",
+  fail = "Submitted",
+  code_correct = "Great work!",
+  code_incorrect = "Not quite. Try again!",
+  maybe_code_feedback = TRUE
+)
+
+# Tutorial options
+tutorial_options(
+  exercise.timelimit = 60,
+  exercise.checker = gradethis::grade_learnr
+)
+
+knitr::opts_chunk$set(echo = FALSE)
+
+# Load data (adjust path as needed)
+analysis <- Open.Visualization.Academy::analysis
+```
+
+## The goal of ggplot2
+
+```{r quiz-ggplot-interactivity}
+quiz(
+  question(
+    "The **ggplot2** package was originally designed to make interactive graphics that are ideal for the internet.",
+    answer("True", correct = FALSE, message = "ggplot2 was actually designed to make static graphics, which are good for printing. For interactive graphics, consider packages like `plotly` or `ggiraph`."),
+    answer("False", correct = TRUE, message = "Correct! ggplot2 was designed to make static graphics. For interactive graphics, consider packages like `plotly` or `ggiraph`. They can make ggplots interactive."),
+    allow_retry = TRUE
+  )
+)
+```
+
+
+## Visualize Data Types
+
+```{r matching, echo=FALSE}
+# Create the UI
+div(
+  style = "max-width: 800px;",
+  
+  h4("Match each term to its definition. Notice ordered factors are used for two types of data."),
+  
+  
+  rank_list(
+    text = "Available terms (drag to match):",
+    labels = list("logical (lgl)", "numeric variables", "ordered factor (ord)", "categorical factor (fct)", "ordered factor (ord)"),
+    input_id = "term_bank",
+    options = sortable_options(group = "terms")
+  ),
+  
+  hr(),
+    
+  tags$style(HTML("
+    .match-row {
+      display: flex;
+      align-items: center;
+      margin: 10px 0;
+      gap: 20px;
+    }
+    .definition {
+      flex: 1;
+      padding: 10px;
+      background: #f8f9fa;
+      border-radius: 5px;
+    }
+    .drop-zone {
+      flex: 0 0 200px;
+      min-height: 50px;
+    }
+  ")),
+  
+  div(
+    class = "match-row",
+    div(class = "definition", "You can shade on a continuous scale, but small differences are hard to see."),
+    rank_list(
+      text = "",
+      labels = NULL,
+      input_id = "match_1",
+      options = sortable_options(group = "terms")
+    )
+  ),
+  
+  div(
+    class = "match-row",
+    div(class = "definition", "Use colors that are easy to tell apart (each word is a different category)."),
+    rank_list(
+      text = "",
+      labels = NULL,
+      input_id = "match_2",
+      options = sortable_options(group = "terms")
+    )
+  ),
+  
+  div(
+    class = "match-row",
+    div(class = "definition", "For ‘small,’ ‘medium,’ and ‘large,’ use color swatches in order (e.g., breakfast, lunch, dinner)."),
+    rank_list(
+      text = "",
+      labels = NULL,
+      input_id = "match_3",
+      options = sortable_options(group = "terms")
+    )
+  ),
+  
+  div(
+    class = "match-row",
+    div(class = "definition", "If the scale goes from ‘hate’ to ‘neutral’ to ‘love,’ use a diverging palette."),
+    rank_list(
+      text = "",
+      labels = NULL,
+      input_id = "match_4",
+      options = sortable_options(group = "terms")
+    )
+  ),
+  
+  div(
+    class = "match-row",
+    div(class = "definition", "A variable with TRUE or FALSE can use contrasting colors or shapes."),
+    rank_list(
+      text = "",
+      labels = NULL,
+      input_id = "match_5",
+      options = sortable_options(group = "terms")
+    )
+  ),
+  
+  br(),
+  
+  actionButton("check_matches", "Check Answers", class = "btn-primary"),
+  
+  br(), br(),
+  
+  uiOutput("feedback_ui")
+)
+```
+```{r matching-server, context="server"}
+observeEvent(input$check_matches, {
+  
+  correct_answers <- 
+    c(
+      "numeric variables", "categorical factor (fct)", "ordered factor (ord)",  
+      "ordered factor (ord)", "logical (lgl)"
+    )
+  user_answers <- c(
+    ifelse(length(input$match_1) > 0, input$match_1[1], ""),
+    ifelse(length(input$match_2) > 0, input$match_2[1], ""),
+    ifelse(length(input$match_3) > 0, input$match_3[1], ""),
+    ifelse(length(input$match_4) > 0, input$match_4[1], ""),
+    ifelse(length(input$match_5) > 0, input$match_5[1], "")
+  )
+  
+  correct <- sum(user_answers == correct_answers)
+  total <- length(correct_answers)
+  
+  output$feedback_ui <- renderUI({
+    if (correct == total) {
+      div(
+        class = "alert alert-success",
+        style = "margin-top: 15px;",
+        tags$strong("✓ Excellent!"), 
+        " All ", total, " matches are correct!"
+      )
+    } else {
+      div(
+        class = "alert alert-warning",
+        style = "margin-top: 15px;",
+        tags$strong("Not quite."),
+        " You got ", correct, " out of ", total, " correct. Try again!"
+      )
+    }
+  })
+})
+```
+
+## The Utility of `show_structure`
+
+```{r quiz-show-structure}
+quiz(
+  question(
+    "The `show_structure()` function will prevent you from copying and pasting sensitive data like names and bank account numbers from R into an AI tool.",
+    answer("True", correct = FALSE, message = "The `show_structure()` function limits the data it puts into its report, but it does not block every type of sensitive data.  You must check the report before copying and pasting."),
+    answer("False", correct = TRUE, message = "Correct! While `show_structure()` limits the data it puts into the report, you still need to check the report before copying and pasting."),
+    allow_retry = TRUE
+  )
+)
+```
+
+## What goes into a Quarto Document?
+
+```{r quiz-quarto-features}
+quiz(
+  question(
+    "A Quarto document typically contains what? (Select ALL that apply)",
+    answer("Code written in languages like R, Python, or JavaScript", correct = TRUE),
+    answer("YAML", correct = TRUE),
+    answer("Text", correct = TRUE),
+    answer("HTML tags", correct = FALSE, message = "You can put HTML into Quarto documents, but you typically will not. Quarto usually adds the tags you need when rendering into a web page."),
+    answer("Markdown", correct = TRUE),
+    allow_retry = TRUE,
+    random_answer_order = TRUE
+  )
+)
+```
+
+
+## What is wrong here?
+
+````r
+```{plot-penguin-weight-broken}
+
+library(ggplot2)
+
+datasets::penguins  
+  filter(sex == "male")
+  ggplot()
+  AES(x = body_mass)
+  Geom_Histogram(bins = 30)
+```
+````
+
+```{r quiz-syntax}
+quiz(
+  question(
+    "What is wrong with this code?",
+    answer("The code block does not include a language.", correct = TRUE),
+    answer("The code is missing pipes (`|>`).", correct = TRUE),
+    answer("The code is missing `+`.", correct = TRUE),
+    answer("The code is missing quotes.", correct = FALSE),
+    answer("The capitalization is wrong.", correct = TRUE),
+    allow_retry = TRUE,
+    random_answer_order = TRUE
+  )
+)
+```
+
+## Writing R with AI
+
+```{r quiz-r-with-AI}
+quiz(
+  question(
+    "Which is TRUE about writing R code with help from AI tools like ChatGPT, Claude, Copilot, and Gemini?",
+    answer("The AI’s example output will always match your results when you run its code.", correct = FALSE, message = "The AI output will frequently show different numbers."),
+    answer("The AI will run the code it writes and confirm it is bug-free before giving it to you", correct = FALSE, message = "Most AI tools cannot directly run R code."),
+    answer("The major AI tools perform equally well on coding tasks.", correct = FALSE, message = "Different AIs have different strengths. The _**best**_ AI model to support R coding today may not be the best tomorrow."),
+    answer("You should never share data with an AI tool without getting approval from whoever provided you the data.", correct = TRUE),
+    allow_retry = TRUE,
+    random_answer_order = TRUE
+  )
+)
+```
+
+## The ggplot() function
+
+```{r quiz-ggplot-function}
+quiz(
+  question(
+    "If you use the ggplot() function with no data and no additional arguments, it will produce an error.",
+    answer("True", correct = FALSE, message = "Actually, it will produce a gray drawing canvas with nothing on it."),
+    answer("False", correct = TRUE, message = "Yes! It will produce a gray drawing canvas with nothing on it."),
+    allow_retry = TRUE
+  )
+)
+```
+
+## What is frequently used?
+
+```{r quiz-ggplot-layers}
+quiz(
+  question(
+    "Which **_THREE_** functions are most frequently used to make a ggplot?",
+    answer("`ggplot()`", correct = TRUE),
+    answer("`aes()`", correct = TRUE, message = "It is common to set at least one aesthetic."),
+    answer("`stat_*()`", correct = FALSE, message = "The `stat_*()` functions are rarely used."),
+    answer("`geom_*()`", correct = TRUE, message = "Most ggplots use at least one `geom`."),
+    answer("`scale_*()`", correct = FALSE, message = "Scales are frequently set but not as often as other details."),
+    answer("`coord_*()`", correct = FALSE, message = "Coordinates are sometimes set but not as often as other details."),
+    answer("`theme_*()` or `theme()`", correct = FALSE, message = "Themes are frequently set but not as often as other details."),
+    allow_retry = TRUE,
+    random_answer_order = TRUE
+  )
+)
+```
+
+## Using Geoms
+
+```{r quiz-geoms}
+quiz(
+  question(
+    "It is fine to use the same `geom` repeatedly in a single ggplot. For example, it is fine to include: `geom_point() + geom_point() + geom_point()` with different arguments.",
+    answer("True", correct = TRUE, message = "You can use the same `geom` over and over, and you can even use different datasets with any `geom`."),
+    answer("False", correct = FALSE, message = "It is fine to use the same `geom` repeatedly."),
+    allow_retry = TRUE
+  )
+)
+```
+
+## Setting Colors
+
+```{r quiz-colors}
+quiz(
+  question(
+    "R allows many ways to specify a color.  Which of these is NOT valid?",
+    answer('"darkolivegreen"', correct = FALSE, message = "darkolivegreen is one of the many hundreds of valid color names"),
+    answer('"#FFD90F"', correct = FALSE, message = "That is Simpsons's yellow in hex."),
+    answer('"FFD90F"', correct = TRUE, message = "Hex colors need a leading `#`"),
+    answer('rgb(18, 220, 65, maxColorValue = 255)', correct = FALSE, message = "Red, green, blue colors with a maxColorValue argument work nicely."),
+    answer('hcl(42, 42, 85)', correct = FALSE, message = "hcl() color codes are fine."),
+    allow_retry = TRUE,
+    random_answer_order = TRUE
+  )
+)
+```
+
+## Bars
+
+```{r quiz-geom-bars}
+quiz(
+  question(
+    "If you have a dataset that has the count of people by category, which `geom` should you use to make a bar chart?",
+    answer("`geom_bar()`", correct = FALSE, message = "`geom_bar()` is for ungrouped data"),
+    answer("`geom_col()`", correct = TRUE, message = "Yes, `geom_col()` is for pre‑summarized (grouped) data and `geom_bar()` will do the counting for you."),
+    answer("`geom_histogram()`", correct = FALSE, message = "`geom_histogram()` groups the data into bins and then counts for you."),
+    answer("`geom_density()`", correct = FALSE, message = "`geom_density()` does not draw bars."),
+    answer("`geom_hex()`", correct = FALSE, message = "`geom_hex()` groups 2‑D data into bins."),
+    allow_retry = TRUE,
+    random_answer_order = TRUE
+  )
+)
+```
+
+## Setting Display Labels
+
+```{r quiz-label-axis}
+quiz(
+  question(
+    "When labeling values on an axis, what is the recommended syntax?",
+    answer("There are multiple methods, but they are equally safe.", correct = FALSE, message = "No, there is a recommended syntax."),
+    answer('`labels = c("D" = "Dog", "C" = "Cow")`', correct = TRUE, message = "Yes, you always want to specify the value and the label."),
+    answer('`labels = c("Dog", "Cow")`', correct = FALSE, message = "This is valid syntax, but it is risky because it will label the first group as Dog without considering the actual values in the data."),
+        answer('`labels = "Dog", "Cow"`', correct = FALSE, message = "This is not valid syntax; the details need to be inside of `c( )`."),
+    allow_retry = TRUE,
+    random_answer_order = TRUE
+  )
+)
+```
+
+
+## Coloring bars
+
+Take a close look at this code:
+
+```r
+fake_clinic_data |> 
+  ggplot() +
+  aes(x = sex, fill = "blue") +
+  geom_bar()
+```
+
+```{r quiz-blue-attribute}
+quiz(
+  question(
+    "If you run the code above, what color will the bars be?",
+    answer("Each bar will be filled blue but the two sexes will have different outlines.", correct = FALSE, message = "The bars will not be blue."),
+    answer("Each bar will be filled blue and there will be no outline.", correct = FALSE, message = "The bars will not be blue."),
+    answer("Every bar will be coral/orange/salmon colored", correct = TRUE, message = "By putting a word instead of a variable as an aesthetic, R will make a new group named ‘blue.’ It will use the default fill color, which is coral."),
+    answer("It will generate an error because bars need colors.", correct = FALSE, message = "This syntax is valid, but the code is not logical."),
+    answer("It will use the default colors for the outline of the bars and generate an error", correct = FALSE, message = "This syntax is valid, but the code is not logical."),
+    allow_retry = TRUE,
+    random_answer_order = TRUE
+  )
+)
+```
+
+## Setting Color Values
+
+```{r quiz-color-values}
+quiz(
+  question(
+    "When manually setting color values with `scale_fill_manual()`, what is the recommended syntax for setting `values`?",
+    answer("There are multiple methods, but they are equally safe.", correct = FALSE, message = "No, there is a recomended syntax."),
+    answer('`values = c("F" = "pink", "M" = "powderblue")`', correct = TRUE, message = "Yes, you always want to specify the value and the color."),
+    answer('`values = c("pink", "powderblue")`', correct = FALSE, message = "This is valid syntax but it is risky because it will the first group will be pink without considering the actual values in the data."),
+        answer('`values = "pink", "powderblue"`', correct = FALSE, message = "This is not valid syntax; the details need to be inside of `c( )`."),
+    allow_retry = TRUE,
+    random_answer_order = TRUE
+  )
+)
+```
+
+
+
+## Divergent Colors
+
+```{r quiz-brewer}
+quiz(
+  question(
+    "If you want to plot data that is scored from hate it, to neutral, to love it, what would be a good Brewer color palette?",
+    answer("YIGnBu", correct = FALSE, message = "That is a sequential palette. You want a diverging palette."),
+    answer("PuBuGn", correct = FALSE, message = "That is a sequential palette. You want a diverging palette."),
+    answer("RdBu", correct = TRUE, message = "Yes! That is a diverging palette."),
+    answer("Paired", correct = FALSE, message = "That is a qualitative palette. You want a diverging palette."),
+    answer("Dark2", correct = FALSE, message = "That is a qualitative palette. You want a diverging palette."),
+    allow_retry = TRUE,
+    random_answer_order = TRUE
+  )
+)
+```
+
+## Facets
+
+```{r quiz-facets}
+quiz(
+  question(
+    "If you want to make it relatively easy for people to compare faceted data consider setting which arguments:",
+    answer("`nrow` or `ncol`", correct = TRUE, message = "It may be possible to align the axes."),
+    answer("`rows` or `cols`", correct = FALSE, message = "These are facet_grid() parameters; they do not align axes."),
+    answer("`labeller =`", correct = FALSE, message = "Setting options with labeller helps to identify the groups but they don't help with the comparison."),
+    answer("`strip.position`", correct = FALSE, message = "This setting does not usually help with comparison."),
+    answer("`vars()`", correct = FALSE, message = "This sets variables but does not help with the comparison"),
+    allow_retry = TRUE,
+    random_answer_order = TRUE
+  )
+)
+```
+
+
+## When is it important to use `coord_cartesian()`
+
+```{r quiz-cartesian}
+quiz(
+  question(
+    "When is it important to use `coord_cartesian()`?",
+    answer("If you want to zoom in on part of a plot and preserve estimates (like trend lines) made on the full dataset.", correct = TRUE),
+    answer("When you need to overwrite the default behavior for the many `geom`s that default to polar coordinates", correct = FALSE, message = "Most `geom`s do not default to polar plots."),
+    answer("When you want to use polar coordinates", correct = FALSE, message = "You would use `coord_polar()`."),
+    answer("When you want to re-estimate details using only the shown part of the graphic", correct = FALSE, message = "To re‑estimate using only the shown data, set `limits =` in `scale_x_*()` or `scale_y_*()`"),
+    answer("If you want to set an X, Y, and Z axis.", correct = FALSE, message = "This is not the purpose of `coord_cartesian()`."),
+    allow_retry = TRUE,
+    random_answer_order = TRUE
+  )
+)
+```
+
+## Coloring Different Words in Titles
+
+```{r quiz-title-color}
+quiz(
+  question(
+    "What packages let you color and use Markdown formatting on individual words in ggplot2 titles?",
+    answer("marquee", correct = TRUE),
+    answer("textpalette", correct = FALSE, message = "Claude.AI suggested this one as a new package name."),
+    answer("ggtext", correct = TRUE),
+    answer("ggplot2 version 4.0 does it by default.", correct = FALSE),
+    answer("tinttext", correct = FALSE, message = "Claude.AI suggested this one.  It is a good name, but it does not exist yet."),
+    allow_retry = TRUE,
+    random_answer_order = TRUE
+  )
+)
+```
+
+## Saving a ggplot
+
+```{r quiz-saving}
+quiz(
+  question(
+    "Does the ggplot2 `ggsave()` function allow you to save transparent images?",
+    answer("Yes, but only in version 4.0 of ggplot2", correct = FALSE),
+    answer("Yes, it will export many formats that support transparent images (like PNG, SVG, PDF, and TIFF).", correct = TRUE),
+    answer("No.  That is one of the biggest open issues with ggplot2.", correct = FALSE),
+    answer("Yes, and it can even make transparent JPG/JPEG files!", correct = FALSE, message = "It can make JPEG files but JPEG does not support alpha transparency."),
+    allow_retry = TRUE,
+    random_answer_order = TRUE
+  )
+)
+```
+
+## What makes a ggplot?
+
+```{r}
+analysis |>
+  filter(
+    recur_site != "Unknown",
+    trt_mod != "Unspecified"
+  ) |>
+  mutate(
+    recur_site = fct_relevel(
+      recur_site,
+      "Transglottic", "Supra", "Glottic"
+    )
+  ) |>
+  ggplot(aes(x = recur_site, fill = trt_mod)) +
+  geom_bar(position = "stack") +
+  scale_y_continuous(
+    breaks = seq(0, 100, 20),
+    minor_breaks = seq(0, 100, 10),
+    limits = c(0, 100)
+  ) +
+  scale_fill_manual(
+    values = c(
+      "XRT" = "gray30",
+      "Chemo+XRT" = "firebrick"
+    )
+  ) +
+  labs(
+    x = "Recurrence Site",
+    y = "Count",
+    fill = "Treatment Modality"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "top")
+```
+
+```{r quiz-ggplot-features}
+quiz(
+  question(
+    "Which ggplot2 features were used to make this plot? (Select ALL that apply)",
+    answer("The `x` and `fill` aesthetics", correct = TRUE),
+    answer("`geom_bar()`", correct = TRUE),
+    answer("`coord_flip()`", correct = FALSE, message = "This plot may look better with the sites on the other axis but `coord_flip()` was not used."),
+    answer("`scale_x_continuous()`", correct = FALSE, message = "`scale_y_continuous()` was used to set the breaks and limits of the **_Y_** axis."),
+    answer("`scale_fill_manual()`", correct = TRUE),
+    answer("`labs()`", correct = TRUE),
+    answer("a `theme()` and/or a named theme", correct = TRUE),
+    allow_retry = TRUE,
+    random_answer_order = TRUE
+  )
+)
+```
+
+## Layouts
+
+```{r quiz-layouts}
+quiz(
+  question(
+    "If you want to combine several ggplots into a complex layout you should:",
+    answer("Use the built-in layout functions.", correct = FALSE, message = "ggplot2 does not handle complex multi-plot layouts by itself."),
+    answer("Explore the Patchwork package.", correct = TRUE),
+    answer("Go directly to tools like Adobe Illustrator, Affinity Designer, CorelDRAW or Inkscape.", correct = FALSE, message = "You rarely need outside tools."),
+    answer("Use the `rUM` package.", correct = FALSE, message = "rUm solves other problems."),
+    allow_retry = TRUE,
+    random_answer_order = TRUE
+  )
+)
+```
