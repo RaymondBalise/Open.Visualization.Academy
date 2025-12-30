@@ -17,7 +17,7 @@ pak::pak("RaymondBalise/Open.Visualization.Academy")
 
 The `Open.Visualization.Academy` package contains:
 
-1. A function called `show_structure()`, which is designed to help you work with AI tools like ChatGPT, Claude, Copilot, and Gemini. To learn about it, run this line in the R Console:  
+1. A function called `show_structure()`, which prints a report describing a dataset.  It tries to not print sensitive data.  This is useful for when you are working with AI tools like ChatGPT, Claude, Copilot, and Gemini. To learn about it, run this line in the R Console:  
   `vignette("show_structure", package = "Open.Visualization.Academy")`.
 2. Datasets named `laryngectomy` and `analysis`. To learn about them, run `?laryngectomy` or `?analysis` in the R Console.
 3. A quiz which covers the material in the Open Visualization Academy class called _Visualization with R's ggplot2 Package and AI Tools like ChatGPT, Claude, Copilot, and Gemini_.
