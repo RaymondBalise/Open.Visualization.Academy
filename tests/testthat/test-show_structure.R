@@ -299,3 +299,15 @@ test_that("is_dangerous_factor handles unsafe factor levels: should return TRUE"
     )
   )
 })
+
+test_that("display_redacted argument outputs < redacted strings > to the table", {
+  output <- capture.output(show_structure(test_data, display_redacted = TRUE))
+  output_text <- paste(output, collapse = " ")
+  expect_true(grepl("< redacted strings >", output_text))
+})
+
+test_that("display_redacted argument outputs < redacted dates > to the table", {
+  output <- capture.output(show_structure(test_data, display_redacted = TRUE))
+  output_text <- paste(output, collapse = " ")
+  expect_true(grepl("< redacted dates >", output_text))
+})

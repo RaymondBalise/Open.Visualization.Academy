@@ -168,3 +168,27 @@ test_data |>
 #   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
+## Extra option: `display_redacted`
+
+Another option for the table display is to use the `display_redacted = TRUE` argument
+within the `show_structure()` function. Setting the value to `TRUE` prints `< redacted
+strings >` for variables of type "character" or `< redacted dates >` for date variables.
+See this comparison:
+
+* `display_redacted = FALSE` (default):
+
+|variable    |type      |levels                                    |
+|:-----------|:---------|:-----------------------------------------|
+|id          |integer   |range: [1-6]                              |
+|first_name  |character |                                          |
+|some_factor |factor    |A, B, C, D, E, F                          |
+|visit_date  |Date      |                                          |
+
+* `display_redacted = TRUE`:
+
+|variable    |type      |levels                                    |
+|:-----------|:---------|:-----------------------------------------|
+|id          |integer   |range: [1-6]                              |
+|first_name  |character |< redacted strings >                      |
+|some_factor |factor    |A, B, C, D, E, F                          |
+|visit_date  |Date      |< redacted dates >                        |
