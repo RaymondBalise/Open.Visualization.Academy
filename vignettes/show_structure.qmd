@@ -1,6 +1,6 @@
 ---
 title: "Creating Copy-Paste Friendly Table Summaries in R"
-author: "Raymond Balies"
+author: "Raymond Balise"
 date: last-modified
 format: html
 vignette: >
@@ -88,11 +88,11 @@ test_data <- tibble(
 
 # The Problem
 
-To get the most helpful answers to analysis questions from AI tools (like ChatGPT, Claude, Copilot, and Gemini), the tools need to know about your data but uploading datasets is often problematic or even illegal. To learn more about de-identification and protected health information (PHI) in the United States, visit the Health and Human Services webpage on [De-Identification of PHI](https://www.hhs.gov/hipaa/for-professionals/special-topics/de-identification/index.html#rationale).
+To get the most helpful answers to analysis questions from AI tools (like ChatGPT, Claude, Copilot, and Gemini), the tools need to know about your data, but uploading datasets is often problematic or even illegal. To learn more about de-identification and protected health information (PHI) in the United States, visit the Health and Human Services webpage on [De-Identification of PHI](https://www.hhs.gov/hipaa/for-professionals/special-topics/de-identification/index.html#rationale).
 
 # The Solution
 
-It would be useful to have a function that prints a description of datasets that **excludes** details that are known to be, or are likely to be, sensitive.  For example, dates are protected health information, free-form text is also problematic.  While the output from the function needs to be checked to make sure there is no sensitive data, it is useful to have a function that prints variable names, variable types and the values for categorical data.
+It would be useful to have a function that prints a description of datasets that **excludes** details that are known to be, or are likely to be, sensitive.  For example, dates are protected health information; free-form text is also problematic.  While the output from the function needs to be checked to make sure there is no sensitive data, it is useful to have a function that prints variable names, variable types and the values for categorical data.
 
 To have R print a description of your dataset — for example, for a dataset named `test_data` — you can first tell R to load the `Open.Visualization.Academy` package into its thinking memory and then use the `show_structure()` function like this:
 ```{.r}
@@ -142,7 +142,7 @@ The report is designed to not print sensitive data like names (which are likely 
 
 ## Extra option: `display_redacted`
 
-By default `show_structure()` hides/suppresses/redacts character variables, dates, and datetime variables from the levels column.  We prefer this format because it make it quicker to review the output. However, if you don't like to see blank lines for the redacted data use the `display_redacted = TRUE` argument within the `show_structure()` function. Setting the value to `TRUE` prints `< redacted strings >` for variables of type "character", `< redacted dates >` for date variables, and `< redacted date-timess >` for datetime variables.
+By default, `show_structure()` hides/suppresses/redacts character variables, dates, and datetime variables from the levels column.  We prefer this format because it makes it quicker to review the output. However, if you don't like to see blank lines for the redacted data, use the `display_redacted = TRUE` argument within the `show_structure()` function. Setting the value to `TRUE` prints `< redacted strings >` for variables of type "character", `< redacted dates >` for date variables, and `< redacted date-times >` for datetime variables.
 
 ```{r}
 #| echo: false
