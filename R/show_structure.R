@@ -91,7 +91,12 @@ show_structure <- function(data, display_redacted = FALSE, clipboard = TRUE) {
   } else if (inherits(col_data, c("POSIXct", "POSIXlt"))) {
       type_label <- "datetime"
       types <- c(types, type_label)
-      levels_info <- c(levels_info, "")
+      #levels_info <- c(levels_info, "")
+      levels_info <- if (!display_redacted) {
+        c(levels_info, "") 
+      } else {
+        c(levels_info, "< redacted date-times >") 
+      }
     } else if (inherits(col_data, "Date")) {
       type_label <- "Date"
       types <- c(types, "Date")
@@ -175,10 +180,11 @@ show_structure <- function(data, display_redacted = FALSE, clipboard = TRUE) {
       if (length(factor_cols) > 0) {
         message("")
         cli::cli_alert_warning(
-          "Review factor levels for sensitive information:\n{col_red(paste(factor_cols, collapse = ', '))}\n{col_blue('Common issues: names, locations, IDs, emails')}"
-          # Remove these before sharing the report with other people & AI.\n\n"
+          paste0(
+            "Review factor levels for sensitive information:",
+            "\n{col_red(paste(factor_cols, collapse = ', '))}"
+          )
         )
-        # Verify these don't contain names, IDs, or other sensitive information.
       }
     }
   }

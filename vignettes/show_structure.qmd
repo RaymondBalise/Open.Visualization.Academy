@@ -92,7 +92,7 @@ To get the most helpful answers to analysis questions from AI tools (like ChatGP
 
 # The Solution
 
-It would be useful to have a function that prints a description of datasets that **excludes** details that are known to be, or are likely to be, sensitive.  For example, dates are protected health information, free-form text is also problematic.  While the output from the function needs to be checked to make sure there is no sensitive data, it is useful to have a function that prints variable names, variable types and the permitted values for categorical data.
+It would be useful to have a function that prints a description of datasets that **excludes** details that are known to be, or are likely to be, sensitive.  For example, dates are protected health information, free-form text is also problematic.  While the output from the function needs to be checked to make sure there is no sensitive data, it is useful to have a function that prints variable names, variable types and the values for categorical data.
 
 To have R print a description of your dataset — for example, for a dataset named `test_data` — you can first tell R to load the `Open.Visualization.Academy` package into its thinking memory and then use the `show_structure()` function like this:
 ```{.r}
@@ -129,23 +129,112 @@ Table: `test_data` looks like this
 |time_col         |time (hrs:min:sec) |range: [08:15:22 - 23:59:59]     |
 |time_col_miss    |time (hrs:min:sec) |range: [09:30:00 - 23:59:59], NA |
 ✔ Copied to the clipboard!
-Check for sensitive data before pasting and sharing.
-! Look for names, IDs, and other sensitive information in the factor
-  levels for: factor_col, factor_col_miss, ordered_col, ordered_col_miss
+Remove any sensitive data before pasting and sharing.
+Look for: names, dates, locations, phone numbers, IDs, emails, etc.
+
+! Review factor levels for sensitive information:
+factor_col, factor_col_miss, ordered_col, ordered_col_miss
 ```
 
 If your operating system allows you to copy and paste, the report will be copied automatically onto your clipboard. 
 
 The report is designed to not print sensitive data like names (which are likely character variables) and dates. It will print the names of categorical factor variables along with their levels. The bottom of the report lists categorical factor variables which contain text *other* than: `"yes", "no", "checked", "unchecked", "TRUE", "FALSE", "male", "female"`. Carefully check these variables for potentially sensitive information before pasting the output into any AI tools or sharing with the public.
 
-## What is the example data?
+## Extra option: `display_redacted`
 
-If you are curious, the example dataset has all the types of data which you are likely to see.  Notice there are columns which were made to have no missing data (like `numeric_col`) and columns that contain missing (like `numeric_col_miss`).
+By default `show_structure()` hides/suppresses/redacts character variables, dates, and datetime variables from the levels column.  We prefer this format because it make it quicker to review the output. However, if you don't like to see blank lines for the redacted data use the `display_redacted = TRUE` argument within the `show_structure()` function. Setting the value to `TRUE` prints `< redacted strings >` for variables of type "character", `< redacted dates >` for date variables, and `< redacted date-timess >` for datetime variables.
+
+```{r}
+#| echo: false
+example_data <- tibble::tibble(
+  mrn = rep(123456789) + 1:7,
+  sex = factor(c("Male", "Male", "Female", "Male", "Male", "Male", "Male")),
+  first_name = c("Kyle", "Raymond", "Lori", "Danny", "Dan", "Sean", "Gabriel"),
+  last_name = factor(
+    c("Grealis", "Balise", "Balise", "Maya", "Feaster", "Luo", "Odom")
+  ),
+  city = factor(
+    c("Dallas", "Miami", "Miami", "Coral Gables", "Dallas", "New York", "Miami")
+  ),
+  package_author = factor(
+    c("this", "this", "none", "none", "none", "none", "other")
+  ),
+  visit_date = as.Date(
+    c(
+      "2034-01-15", "2034-02-20", "2034-02-20", "2034-03-10", "2034-04-05", 
+      "2034-05-12", "2034-06-18"
+    )
+  )
+)
+```
+
+For example:
+
+* `display_redacted = TRUE`:
+
+```{.markdown}
+Table: `example_data` looks like this
+
+|variable       |type      |levels                                    |
+|:--------------|:---------|:-----------------------------------------|
+|mrn            |numeric   |range: [123456790-123456796]              |
+|sex            |factor    |Female, Male                              |
+|first_name     |character |< redacted strings >                      |
+|last_name      |factor    |Balise, Feaster, Grealis, Luo, Maya, Odom |
+|city           |factor    |Coral Gables, Dallas, Miami, New York     |
+|package_author |factor    |none, other, this                         |
+|visit_date     |Date      |< redacted dates >                        |
+✔ Copied to the clipboard!
+Remove any sensitive data before pasting and sharing.
+Look for: names, dates, locations, phone numbers, IDs, emails, etc.
+
+! Review factor levels for sensitive information:
+last_name, city, package_author
+```
+
+* `display_redacted = FALSE` (default):
+
+```{.markdown}
+Table: `example_data` looks like this
+
+|variable       |type      |levels                                    |
+|:--------------|:---------|:-----------------------------------------|
+|mrn            |numeric   |range: [123456790-123456796]              |
+|sex            |factor    |Female, Male                              |
+|first_name     |character |                                          |
+|last_name      |factor    |Balise, Feaster, Grealis, Luo, Maya, Odom |
+|city           |factor    |Coral Gables, Dallas, Miami, New York     |
+|package_author |factor    |none, other, this                         |
+|visit_date     |Date      |                                          |
+✔ Copied to the clipboard!
+Remove any sensitive data before pasting and sharing.
+Look for: names, dates, locations, phone numbers, IDs, emails, etc.
+
+! Review factor levels for sensitive information:
+last_name, city, package_author
+```
+
+Notice that `show_structure()` is not smart enough to notice that some numeric values, like the medical record number variable named `mrn`, and factor levels for `last_name` and `city` may be sensitive.  Carefully check the report and remove **_all_** sensitive data before pasting and sharing.
 
 ```{r}
 suppressPackageStartupMessages(library(dplyr))
 suppressPackageStartupMessages(library(kableExtra))
 
+options(scipen = 999)
+example_data |> 
+  kable(format = "html", escape = FALSE) |> 
+  kable_styling(bootstrap_options = c("striped", "hover")) |> 
+  column_spec(c(1, 4, 5), color = "red", include_thead = TRUE)
+options(scipen = 0)
+
+```
+
+
+## What is the example data?
+
+If you are curious, the example dataset has all the types of data which you are likely to see.  Notice there are columns which were made to have no missing data (like `numeric_col`) and columns that contain missing (like `numeric_col_miss`).
+
+```{r}
 # Function to replace NA with red-colored NA in HTML output
 format_na_red <- function(x) {
   if_else(is.na(x), 
@@ -158,37 +247,5 @@ test_data |>
   mutate(across(everything(), format_na_red)) |> 
   kable(format = "html", escape = FALSE) |> 
   kable_styling(bootstrap_options = c("striped", "hover"))
-
-# # Alternative approach using cell_spec from kableExtra
-# test_data |> 
-#   mutate(across(everything(), ~ cell_spec(.x, 
-#                                           color = if_else(is.na(.x), "red", "black"),
-#                                           format = "html"))) |> 
-#   kable(format = "html", escape = FALSE) |> 
-#   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
-## Extra option: `display_redacted`
-
-Another option for the table display is to use the `display_redacted = TRUE` argument
-within the `show_structure()` function. Setting the value to `TRUE` prints `< redacted
-strings >` for variables of type "character" or `< redacted dates >` for date variables.
-See this comparison:
-
-* `display_redacted = FALSE` (default):
-
-|variable    |type      |levels                                    |
-|:-----------|:---------|:-----------------------------------------|
-|id          |integer   |range: [1-6]                              |
-|first_name  |character |                                          |
-|some_factor |factor    |A, B, C, D, E, F                          |
-|visit_date  |Date      |                                          |
-
-* `display_redacted = TRUE`:
-
-|variable    |type      |levels                                    |
-|:-----------|:---------|:-----------------------------------------|
-|id          |integer   |range: [1-6]                              |
-|first_name  |character |< redacted strings >                      |
-|some_factor |factor    |A, B, C, D, E, F                          |
-|visit_date  |Date      |< redacted dates >                        |
