@@ -229,10 +229,25 @@ options(scipen = 0)
 
 ```
 
+So, before sharing the report you would want to edit it to show this:
+
+```{.markdown}
+Table: `example_data` looks like this
+
+|variable       |type      |levels                                    |
+|:--------------|:---------|:-----------------------------------------|
+|mrn            |numeric   |                                          |
+|sex            |factor    |Female, Male                              |
+|first_name     |character |                                          |
+|last_name      |factor    |                                          |
+|city           |factor    |                                          |
+|package_author |factor    |none, other, this                         |
+|visit_date     |Date      |                                          |
+```
 
 ## What is the example data?
 
-If you are curious, the example dataset has all the types of data which you are likely to see.  Notice there are columns which were made to have no missing data (like `numeric_col`) and columns that contain missing (like `numeric_col_miss`).
+If you are curious, the `test_data` used for the first report above contains all the types of data you are likely to see. Notice there are columns that were designed to have no missing data (like `numeric_col`) and columns that contain missing values (like `numeric_col_miss`).
 
 ```{r}
 # Function to replace NA with red-colored NA in HTML output
