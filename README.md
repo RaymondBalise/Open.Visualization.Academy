@@ -35,16 +35,16 @@ Watch all of the videos before trying the quiz included here.
 
 To use the quiz in RStudio, after installing the package, restart RStudio and then look in the Tutorial pane:
 
-<img src="./images/tutorials.jpg" alt="Image of the RStudio IDE with an arrow pointing to the tutorial tab in the upper right windowpane." style="border: 1px solid black;">
+<img src="./man/figures/tutorials.jpg" alt="Image of the RStudio IDE with an arrow pointing to the tutorial tab in the upper right windowpane." style="border: 1px solid black;">
 
 If you are working on a large screen, you can resize the quiz:
 
-<img src="./images/resize.jpg" alt="Image of the RStudio IDE with call-outs pointing to buttons for 'Show in own window', and 'Stop background job'.  Another call-out points to the edges of the tutorial window. It says 'You can drag the borders of the
+<img src="./man/figures/resize.jpg" alt="Image of the RStudio IDE with call-outs pointing to buttons for 'Show in own window', and 'Stop background job'.  Another call-out points to the edges of the tutorial window. It says 'You can drag the borders of the
 windowpane to make the quiz bigger.'" style="border: 1px solid black;">
 
 If you scroll to the bottom of the question list, you can start over.
 
-<img src="./images/feedback.jpg" alt="Image showing a true/false question with a call-out bubble pointing to Start Over at the bottom of a list of quiz question names." style="border: 1px solid black;">
+<img src="./man/figures/feedback.jpg" alt="Image showing a true/false question with a call-out bubble pointing to Start Over at the bottom of a list of quiz question names." style="border: 1px solid black;">
 
 If you are not working in RStudio, you can access the quiz by running this:
 

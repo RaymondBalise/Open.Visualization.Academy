@@ -1,0 +1,25 @@
+template:
+  bootstrap: 5
+  light-switch: true
+  bslib:
+    font-size: 0.9rem
+    border-radius: 0.5rem
+    btn-border-radius: 0.25rem
+
+articles:
+  - title: Articles
+    navbar: ~
+    contents:
+      - show_structure
+
+reference:
+  - title: "Datasets"
+    desc: "Datasets to support class _Visualization with R's ggplot2 Package and AI Tools like ChatGPT, Claude, Copilot, and Gemini_"
+    contents:
+      - analysis
+      - laryngectomy
+
+  - title: "Functions"
+    desc: ""
+    contents:
+      - show_structure
