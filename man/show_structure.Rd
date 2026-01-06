@@ -4,11 +4,17 @@
 \alias{show_structure}
 \title{Print a description of the variables in a dataset}
 \usage{
-show_structure(data, clipboard = TRUE)
+show_structure(data, display_redacted = FALSE, clipboard = TRUE)
 }
 \arguments{
 \item{data}{\itemize{
 \item The name of an R dataset
+}}
+
+\item{display_redacted}{\itemize{
+\item Logical. Option to have empty table cells for character
+and date formats (the default) or to display "< redacted strings|dates >" for
+charater strings and dates, respectively.
 }}
 
 \item{clipboard}{\itemize{

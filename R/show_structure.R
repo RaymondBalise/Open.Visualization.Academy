@@ -10,8 +10,11 @@
 #'
 #'
 #' @param data - The name of an R dataset
+#' @param display_redacted - Logical. Option to have empty table cells for character
+#'   and date formats (the default) or to display "< redacted strings|dates >" for
+#'   charater strings and dates, respectively.
 #' @param clipboard - Copy results to clipboard (TRUE by default)
-#'
+#' 
 #' @return A formatted markdown table (via knitr::kable) displaying the
 #'   structure of the input dataset. The table contains three columns:
 #'   \item{variable}{Column names from the input data}
@@ -27,7 +30,7 @@
 #' @examples
 #' show_structure(mtcars)
 
-show_structure <- function(data, clipboard = TRUE) {
+show_structure <- function(data, display_redacted = FALSE, clipboard = TRUE) {
   # Get the name of the dataset passed to the function
   data_name <- deparse(substitute(data))
 
@@ -88,11 +91,20 @@ show_structure <- function(data, clipboard = TRUE) {
   } else if (inherits(col_data, c("POSIXct", "POSIXlt"))) {
       type_label <- "datetime"
       types <- c(types, type_label)
-      levels_info <- c(levels_info, "")
+      #levels_info <- c(levels_info, "")
+      levels_info <- if (!display_redacted) {
+        c(levels_info, "") 
+      } else {
+        c(levels_info, "< redacted date-times >") 
+      }
     } else if (inherits(col_data, "Date")) {
       type_label <- "Date"
       types <- c(types, "Date")
-      levels_info <- c(levels_info, "")
+      levels_info <- if (!display_redacted) {
+        c(levels_info, "") 
+      } else {
+        c(levels_info, "< redacted dates >") 
+      }
     } else if (is.logical(col_data)) {
       types <- c(types, "logical")
 
@@ -129,7 +141,11 @@ show_structure <- function(data, clipboard = TRUE) {
       }
     } else {
       types <- c(types, class(col_data)[1])
-      levels_info <- c(levels_info, "")
+      levels_info <- if (!display_redacted) {
+        c(levels_info, "")
+      } else {
+        c(levels_info, "< redacted strings >")
+      }
     }
   }
 
@@ -162,11 +178,13 @@ show_structure <- function(data, clipboard = TRUE) {
     if (nrow(data) > 0) {
       factor_cols <- names(data)[sapply(data, is_dangerous_factor)]
       if (length(factor_cols) > 0) {
+        message("")
         cli::cli_alert_warning(
-          "Look for names, IDs, and other sensitive information in the factor levels for: {col_red(paste(factor_cols, collapse = ', '))}"
-          # Remove these before sharing the report with other people & AI.\n\n"
+          paste0(
+            "Review factor levels for sensitive information:",
+            "\n{col_red(paste(factor_cols, collapse = ', '))}"
+          )
         )
-        # Verify these don't contain names, IDs, or other sensitive information.
       }
     }
   }
