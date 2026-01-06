@@ -2,3 +2,7 @@
 ^\.Rproj\.user$
 ^LICENSE\.md$
 ^images$
+^cran-comments\.md$
+^vignettes/\.quarto$
+^pkgdown$
+^docs$
