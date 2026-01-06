@@ -1,6 +1,6 @@
 # Open.Visualization.Academy
 
-This is a package to support class _Visualization with R's ggplot2 Package and AI Tools like ChatGPT, Claude, Copilot, and Gemini_ which is part of the [Open Visualization Academy]() project.
+This is a package to support class _Visualization with R's ggplot2 Package and AI Tools like ChatGPT, Claude, Copilot, and Gemini_ which is part of the Open Visualization Academy project.
 
 To install the package:
 
@@ -32,6 +32,30 @@ The _Visualization with R's ggplot2 Package and AI Tools like ChatGPT, Claude, C
 + Fundamentals of ggplot2
 
 Watch all of the videos before trying the quiz included here.
+
+### Using the Quiz on Mac
+
+You will need to install a couple packages. Run these two lines using the R console:
+
+```r
+install.packages("remotes")
+remotes::install_github("rstudio/gradethis")
+```
+
+### Using the Quiz on Windows
+
+You will need to install some software and a couple packages:
+
+Install Rtools from <https://cran.r-project.org/bin/windows/Rtools/rtools45/rtools.html> by using the **Rtools45 installer** if you are using and Intel CPU or if you are using a Microsoft Surface or other ARM CPU, use the **64-bit ARM Rtools45 installer**. 
+
+Run these two lines using the R console:
+
+```r
+install.packages("remotes")
+remotes::install_github("rstudio/gradethis")
+```
+
+### Taking the Quiz
 
 To use the quiz in RStudio, after installing the package, restart RStudio and then look in the Tutorial pane:
 

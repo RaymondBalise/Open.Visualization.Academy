@@ -89,7 +89,7 @@ test_data <- tibble(
 # The Problem
 
 
-To get the most helpful answers to analysis questions from AI tools (like ChatGPT, Claude, Copilot, and Gemini), the tools need to know about your data but uploading datasets is often problematic or even illegal. Other summaries like the `skim()` function in the [skimr](https://docs.ropensci.org/skimr/) package or `str()` from base R will print potentially sensitive data like character strings or dates.  To learn more about de-identification and protected health information (PHI) in the United States, visit the Health and Human Services webpage on [De-Identification of PHI](https://www.hhs.gov/hipaa/for-professionals/special-topics/de-identification/index.html#rationale).
+To get the most helpful answers to analysis questions from AI tools (like ChatGPT, Claude, Copilot, and Gemini), the tools need to know about your data but uploading datasets is often problematic or even illegal. Other summaries like the `skim()` function in the [skimr](https://docs.ropensci.org/skimr/) package or `str()` from base R will print potentially sensitive data like character strings or dates.  To learn more about de-identification and protected health information (PHI) in the United States, visit the Health and Human Services webpage on De-Identification of PHI at `https://www.hhs.gov/hipaa/for-professionals/special-topics/de-identification/index.html#rationale`.
 
 # The Solution
 
