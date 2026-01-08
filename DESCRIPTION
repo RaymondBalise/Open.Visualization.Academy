@@ -32,7 +32,7 @@ Authors@R:
         comment = c(ORCID = "0000-0003-1341-4555")
       )
     )
-Description: This contains functions and data used by the Open Visualization Academy classes on data processing and visualization. The tutorial included with this package requires the gradethis package which can be installed using `remotes::install_github('rstudio/gradethis')`.
+Description: This contains functions and data used by the Open Visualization Academy classes on data processing and visualization. The tutorial included with this package requires the gradethis package which can be installed using "remotes::install_github('rstudio/gradethis')".
 License: AGPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
