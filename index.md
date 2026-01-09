@@ -1,0 +1,101 @@
+# Open.Visualization.Academy
+
+This is a package to support class *Visualization with R’s ggplot2
+Package and AI Tools like ChatGPT, Claude, Copilot, and Gemini* which is
+part of the Open Visualization Academy project.
+
+To install the package:
+
+``` r
+# The easiest way to install Open.Visualization.Academy is to run:
+install.packages("Open.Visualization.Academy")
+
+# Or you can get the development version from GitHub:
+# install.packages("pak")
+pak::pak("RaymondBalise/Open.Visualization.Academy")
+```
+
+## About this Package
+
+The `Open.Visualization.Academy` package contains:
+
+1.  A function called [`show_structure()`](reference/show_structure.md),
+    which prints a report describing a dataset. It tries to not print
+    sensitive data. This is useful for when you are working with AI
+    tools like ChatGPT, Claude, Copilot, and Gemini. To learn about it,
+    run this line in the R Console:  
+    [`vignette("show_structure", package = "Open.Visualization.Academy")`](articles/show_structure.md).
+2.  Datasets named `laryngectomy` and `analysis`. To learn about them,
+    run [`?laryngectomy`](reference/laryngectomy.md) or
+    [`?analysis`](reference/analysis.md) in the R Console.
+3.  A quiz which covers the material in the Open Visualization Academy
+    class called *Visualization with R’s ggplot2 Package and AI Tools
+    like ChatGPT, Claude, Copilot, and Gemini*.
+
+## About the Quiz
+
+The *Visualization with R’s ggplot2 Package and AI Tools like ChatGPT,
+Claude, Copilot, and Gemini* course has four sections:
+
+- About R
+- About Quarto
+- Thoughts about AI
+- Fundamentals of ggplot2
+
+Watch all of the videos before trying the quiz included here.
+
+### Using the Quiz on Mac
+
+You will need to install a couple packages. Run these two lines using
+the R console:
+
+``` r
+install.packages("remotes")
+remotes::install_github("rstudio/gradethis")
+```
+
+### Using the Quiz on Windows
+
+You will need to install some software and a couple packages:
+
+Install Rtools from
+<https://cran.r-project.org/bin/windows/Rtools/rtools45/rtools.html> by
+using the **Rtools45 installer** if you are using and Intel CPU or if
+you are using a Microsoft Surface or other ARM CPU, use the **64-bit ARM
+Rtools45 installer**.
+
+Run these two lines using the R console:
+
+``` r
+install.packages("remotes")
+remotes::install_github("rstudio/gradethis")
+```
+
+### Taking the Quiz
+
+To use the quiz in RStudio, after installing the package, restart
+RStudio and then look in the Tutorial pane:
+
+![Image of the RStudio IDE with an arrow pointing to the tutorial tab in
+the upper right windowpane.](./reference/figures/tutorials.jpg)
+
+If you are working on a large screen, you can resize the quiz:
+
+![Image of the RStudio IDE with call-outs pointing to buttons for 'Show
+in own window', and 'Stop background job'. Another call-out points to
+the edges of the tutorial window. It says 'You can drag the borders of
+the windowpane to make the quiz
+bigger.'](./reference/figures/resize.jpg)
+
+If you scroll to the bottom of the question list, you can start over.
+
+![Image showing a true/false question with a call-out bubble pointing to
+Start Over at the bottom of a list of quiz question
+names.](./reference/figures/feedback.jpg)
+
+If you are not working in RStudio, you can access the quiz by running
+this:
+
+``` r
+learnr::run_tutorial("Open Visualization Academy Quiz", "Open.Visualization.Academy")
+```
