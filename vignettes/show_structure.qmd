@@ -221,13 +221,14 @@ Note that `show_structure()` is not smart enough to notice that some numeric val
 suppressPackageStartupMessages(library(dplyr))
 suppressPackageStartupMessages(library(kableExtra))
 
-options(scipen = 999)
+old_options <- options(scipen = 999) # don't show numbers in scientific notation
+
 example_data |> 
   kable(format = "html", escape = FALSE) |> 
   kable_styling(bootstrap_options = c("striped", "hover")) |> 
   column_spec(c(1, 4, 5), color = "red", include_thead = TRUE)
-options(scipen = 0)
 
+options(old_options) # show numbers in scientific notation
 ```
 
 So, before sharing the report you would want to edit it to show this:
