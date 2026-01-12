@@ -6,3 +6,4 @@
 ^vignettes/\.quarto$
 ^pkgdown$
 ^docs$
+^.github$
